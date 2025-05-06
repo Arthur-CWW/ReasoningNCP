@@ -30,7 +30,7 @@ python vllm_summarize_chapter_summaries.py --model_name <model_name> --input_cha
 
 ### Generate Character Sheets
 
-Run 
+Run
 
 ```bash
 python vllm_summarize_character_sheets.py --model_name <model_name> --input_chapters_fname <input_chapters_fname> --output_name <output_name>
@@ -60,7 +60,7 @@ Your data needs to have the following structure:
 
 ```
 {
-    "story_name_upto_n": character_sheets_upto_n        
+    "story_name_upto_n": character_sheets_upto_n
 }
 ```
 

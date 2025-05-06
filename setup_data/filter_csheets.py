@@ -6,7 +6,8 @@ from transformers import AutoTokenizer
 import jsonlines
 import pickle
 import argparse
-from thought_chain_utils import (
+import os
+from .thought_chain_utils import (
     format_prompt,
     get_final_entailment_question,
 )
@@ -19,8 +20,8 @@ parser.add_argument('--story-data-fname', type=str, help="File name to read the 
 args = parser.parse_args()
 
 client = OpenAI(
-    base_url="http://localhost:8000/v1",
-    api_key="token-abc123",
+    base_url=os.getenv("BASE_URL", "http://localhost:8000/v1"),
+    api_key=os.getenv("API_KEY", "token-abc123"),
 )
 
 MODEL_NAME = args.model_name
@@ -80,7 +81,7 @@ for datapoint in tqdm(simplified_data):
     pred = get_pred(cur_prompt)
     if pred == 5:
         verified_datapoints.append(datapoint)
-        
+
 print(f"Verified {len(verified_datapoints)} datapoints out of {len(simplified_data)}")
 
 with jsonlines.open(argparse.output_fname, "w") as writer:

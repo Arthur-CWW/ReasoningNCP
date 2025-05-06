@@ -1,7 +1,7 @@
 import re
 from transformers import AutoTokenizer
 from typing import List, Tuple
-from chiron_utils import format_snippet_for_chiron_generation
+from .chiron_utils import format_snippet_for_chiron_generation
 
 regexspace = re.compile(r"\ +", re.IGNORECASE)
 regexlines = re.compile(r"(\n(\ )?)+", re.IGNORECASE)
@@ -174,7 +174,7 @@ def get_prompt_data_for_chiron_generation(
                     "question": question,
                     "question_set": title,
                     "story_id": story_id,
-                    
+
                 }
             )
     return all_prompt_data_for_snip_char

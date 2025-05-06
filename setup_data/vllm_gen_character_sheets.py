@@ -39,11 +39,9 @@ from chiron_simplification_utils import (
 
 from openai import OpenAI
 
-openai_api_key = "EMPTY"
-openai_api_base = "http://localhost:8000/v1"
 client = OpenAI(
-    api_key=openai_api_key,
-    base_url=openai_api_base,
+    base_url=os.getenv("BASE_URL", "http://localhost:8000/v1"),
+    api_key=os.getenv("API_KEY", "token-abc123"),
 )
 
 import jsonlines
@@ -83,7 +81,7 @@ print(f"Tokenizer loaded!")
 
 def generation():
     generationmodule_output_name = f"./temp.{SAVING_NAME}.output.generationmodule.vllm.{GENERATION_MODULE_MODEL_NAME}.{GENERATION_MODULE_MAX_TOKENS}maxtok.jsonl"
-    
+
     if os.path.exists(generationmodule_output_name):
         print(f"Loading generation module outputs from {generationmodule_output_name}...")
         with jsonlines.open(generationmodule_output_name, "r") as reader:
@@ -98,11 +96,11 @@ def generation():
             f"Found {len(FLATTENED_GENERATION_OUTPUTS_PER_SENTENCE)} sentences, starting simplification..."
         )
         return FLATTENED_GENERATION_OUTPUTS_PER_SENTENCE
-    
+
     print(f"Loading input stories from {ORIGINAL_STORIES_INPUT_FNAME}...")
     with open(ORIGINAL_STORIES_INPUT_FNAME, "rb") as f:
         STORIES_TO_BASE_CHARACTER_SHEETS_ON = pickle.load(f)
-    
+
     # will be (story_name, (list_of_3_characters, list_of_chapters))
     STORIES_TO_BASE_CHARACTER_SHEETS_ON = list(STORIES_TO_BASE_CHARACTER_SHEETS_ON.items())
 
@@ -178,7 +176,7 @@ def generation():
     outputs = []
     for prompt in tqdm(generation_module_prompts):
         outputs.append(generate_method(prompt))
-        
+
         print(f"response: {outputs[-1]}")
 
     print(f"Finished generation!")

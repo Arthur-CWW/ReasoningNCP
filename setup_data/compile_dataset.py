@@ -1,7 +1,7 @@
 import jsonlines
 import pickle
 import json
-from prompt_utils import generate_reasoning_from_story_messages
+from .prompt_utils import generate_reasoning_from_story_messages
 
 # Explanations:
 ## STORY_TO_CHAPTERS_AND_CHARACTERS - {story id: [[character list], [chapter list]]}
@@ -21,22 +21,22 @@ def shorten_text_to_max_len(text, max_len=-1):
     for i, s in enumerate(split):
         # remember to account for "\n" joining paragraphs
         num_words = len(s.split(" ")) + 1
-        
+
         if cur_len + num_words > max_len:
             break
         cur_len += num_words
         new_text.append(s)
     new_text = new_text[::-1]
     return "\n".join(new_text)
-    
+
 
 def get_num_message_words(messages):
     combined = " ".join([m['content'] for m in messages])
     return len(combined.split(" "))
 
-def get_datapoints(stories, last_n, 
-                   STORY_TO_CHAPTERS_AND_CHARACTERS, SUMMARY_UPTOCHAP, 
-                   BOOK_TO_CHAPTER_SUMMARIES, 
+def get_datapoints(stories, last_n,
+                   STORY_TO_CHAPTERS_AND_CHARACTERS, SUMMARY_UPTOCHAP,
+                   BOOK_TO_CHAPTER_SUMMARIES,
                    STORY_CHAR_SUMCSHEET):
     datapoints = []
     for story in stories:
@@ -100,7 +100,7 @@ def get_datapoints(stories, last_n,
             else:
                 print("FJDSKLFJDKSLJJKL")
     return datapoints
-    
+
 LOW_CHAPTER_WORD_LIMIT = 200
 # HIGH_CHAPTER_WORD_LIMIT = 4000
 HIGH_CHAPTER_WORD_LIMIT = 5000
@@ -125,17 +125,17 @@ print(f"len(SUMMARY_UPTOCHAP) = {len(SUMMARY_UPTOCHAP)}")
 
 with open(f"training_data/{split}_long_storyuptochapsum_to_storysummaries.pkl", "rb") as f:
     SUBCHAPTER_SUMMARIES_TO_TEXT = pickle.load(f)
-    
+
 with open(f"training_data/{split}_long_story_to_chapter_summaries.pkl", "rb") as f:
     BOOK_TO_CHAPTER_SUMMARIES = pickle.load(f)
-    
+
 stories = list(STORY_TO_CHAPTERS_AND_CHARACTERS.keys())
 print(f"len(stories) = {len(stories)}")
 
-datapoints = get_datapoints(stories, last_n, 
-                            STORY_TO_CHAPTERS_AND_CHARACTERS, 
-                            SUMMARY_UPTOCHAP, SUBCHAPTER_SUMMARIES_TO_TEXT, 
-                            BOOK_TO_CHAPTER_SUMMARIES, 
+datapoints = get_datapoints(stories, last_n,
+                            STORY_TO_CHAPTERS_AND_CHARACTERS,
+                            SUMMARY_UPTOCHAP, SUBCHAPTER_SUMMARIES_TO_TEXT,
+                            BOOK_TO_CHAPTER_SUMMARIES,
                             STORY_CHAR_SUMCSHEET,
                            MAX_STORY_WORDS=MAX_STORY_WORDS)
 
